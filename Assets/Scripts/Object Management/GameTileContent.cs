@@ -3,7 +3,8 @@
 public enum GameTileContentType
 {
     Empty,
-    Destination
+    Destination,
+    Wall
 }
 
 public class GameTileContent : MonoBehaviour

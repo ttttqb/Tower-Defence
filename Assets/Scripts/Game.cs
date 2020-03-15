@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Game : MonoBehaviour {
 
@@ -32,6 +33,19 @@ public class Game : MonoBehaviour {
         {
             HandleTouch();
         }
+        else if (Input.GetMouseButtonDown(1))
+        {
+            HandleAlternativeTouch();
+        }
+    }
+
+    private void HandleAlternativeTouch()
+    {
+        GameTile tile = board.GetTile(TouchRay);
+        if (tile != null)
+        {
+            board.ToggleDestination(tile);
+        }
     }
 
     void HandleTouch()
@@ -40,7 +54,7 @@ public class Game : MonoBehaviour {
         if (tile != null)
         {
             //tile.Content = tileContentFactory.Get(GameTileContentType.Destination);
-            board.ToggleDestination(tile);
+            board.ToggleWall(tile);
         }
     }
 }
