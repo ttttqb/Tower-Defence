@@ -16,6 +16,7 @@ public class Game : MonoBehaviour {
 
     void Awake () {
 		board.Initialize(boardSize, tileContentFactory);
+        board.ShowGrid = true;
 	}
 
     void OnValidate(){
@@ -36,6 +37,14 @@ public class Game : MonoBehaviour {
         else if (Input.GetMouseButtonDown(1))
         {
             HandleAlternativeTouch();
+        }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            board.ShowPaths = !board.ShowPaths;
+        }
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            board.ShowGrid = !board.ShowGrid;
         }
     }
 
