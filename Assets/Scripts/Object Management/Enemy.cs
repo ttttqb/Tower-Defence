@@ -19,4 +19,10 @@ public class Enemy : MonoBehaviour
 	{
 		transform.localPosition = tile.transform.localPosition;
 	}
+
+	public bool GameUpdate()
+	{
+		transform.localPosition += Vector3.forward * Time.deltaTime;
+		return true;
+	}
 }

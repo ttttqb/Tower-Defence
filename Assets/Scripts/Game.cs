@@ -21,6 +21,8 @@ public class Game : MonoBehaviour {
 
     Ray TouchRay => Camera.main.ScreenPointToRay(Input.mousePosition);
 
+    EnemyCollection enemies = new EnemyCollection();
+
     void Awake () {
 		board.Initialize(boardSize, tileContentFactory);
         board.ShowGrid = true;
@@ -60,6 +62,8 @@ public class Game : MonoBehaviour {
             spawnProgress -= 1f;
             SpawnEnemy();
         }
+
+        enemies.GameUpdate();
     }
 
     private void HandleAlternativeTouch()
@@ -94,5 +98,6 @@ public class Game : MonoBehaviour {
             board.GetSpawnPoint(UnityEngine.Random.Range(0, board.SpawnPointCount));
         Enemy enemy = enemyFactory.Get();
         enemy.SpawnOn(spawnPoint);
+        enemies.Add(enemy);
     }
 }

@@ -5,6 +5,7 @@ public class GameTile : MonoBehaviour {
 	[SerializeField]
 	Transform arrow = default;
     GameTile north, east, south, west, nextOnPath;
+	public GameTile gameTileOnPath => nextOnPath;
     int distance;
 
 	static Quaternion
