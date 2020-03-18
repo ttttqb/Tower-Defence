@@ -3,6 +3,8 @@
   <component name="ContentModelStore">
     <e p="C:\Users\tanqi\.Rider2019.3\system\extResources" t="IncludeRecursive" />
     <e p="C:\Users\tanqi\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_Tower Defence.1973280061.00" t="ExcludeRecursive" />
+    <e p="C:\Users\tanqi\AppData\local\Android\Sdk\platforms\android-29\data\res" t="IncludeRecursive" />
+    <e p="C:\Users\tanqi\AppData\local\Android\Sdk\sources\android-29" t="IncludeRecursive" />
     <e p="D:\Unity learning\Tower Defence" t="IncludeRecursive">
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
