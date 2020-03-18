@@ -23,12 +23,12 @@ public class Game : MonoBehaviour {
 
     EnemyCollection enemies = new EnemyCollection();
 
-    void Awake () {
+    private void Awake () {
 		board.Initialize(boardSize, tileContentFactory);
         board.ShowGrid = true;
 	}
 
-    void OnValidate(){
+    private void OnValidate(){
         if (boardSize.x < 2){
             boardSize.x = 2;
         }
@@ -69,16 +69,14 @@ public class Game : MonoBehaviour {
     private void HandleAlternativeTouch()
     {
         GameTile tile = board.GetTile(TouchRay);
-        if (tile != null)
+        if (tile == null) return;
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                board.ToggleDestination(tile);
-            }
-            else
-            {
-                board.ToggleSpawnPoint(tile);
-            }
+            board.ToggleDestination(tile);
+        }
+        else
+        {
+            board.ToggleSpawnPoint(tile);
         }
     }
 
