@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Object_Management
 {
@@ -19,7 +20,7 @@ namespace Object_Management
 
 		private GameTile tileFrom, tileTo;
 		private Vector3 positionFrom, positionTo;
-		private float progress;
+		private float progress, progressFactor;
 
 		Direction direction;
 		DirectionChange directionChange;
@@ -49,15 +50,25 @@ namespace Object_Management
 			directionChange = DirectionChange.None;
 			directionAngleFrom = directionAngleTo = direction.GetAngle();
 			transform.localRotation = direction.GetRotation();
+			progressFactor = 2f;
+		}
+
+		void PrepareOutro () {
+			positionTo = tileFrom.transform.localPosition;
+			directionChange = DirectionChange.None;
+			directionAngleTo = direction.GetAngle();
+			model.localPosition = Vector3.zero;
+			transform.localRotation = direction.GetRotation();
+			progressFactor = 2f;
 		}
 
 		public bool GameUpdate()
 		{
-			progress += Time.deltaTime;
+			progress += Time.deltaTime * progressFactor;
 			while (progress >= 1)
 			{
-				tileFrom = tileTo;
-				tileTo = tileTo.NextTileOnPath;
+				// tileFrom = tileTo;
+				// tileTo = tileTo.NextTileOnPath;
 				if (tileTo == null)
 				{
 					OriginFactory.Reclaim(this);
@@ -67,8 +78,10 @@ namespace Object_Management
 				// positionFrom = positionTo;
 				// positionTo = tileFrom.ExitPoint;
 				// transform.localRotation = tileFrom.PathDirection.GetRotation();
-				progress -= 1f;
+				//progress -= 1f;
+				progress = (progress - 1f) / progressFactor;
 				PrepareNextState();
+				progress *= progressFactor;
 			}
 
 			if (directionChange == DirectionChange.None) {
@@ -88,7 +101,14 @@ namespace Object_Management
 
 		void PrepareNextState()
 		{
+			tileFrom = tileTo;
+			tileTo = tileTo.NextTileOnPath;
 			positionFrom = positionTo;
+			if (tileTo == null)
+			{
+				PrepareOutro();
+				return;
+			}
 			positionTo = tileFrom.ExitPoint;
 			directionChange = direction.GetDirectionChangeTo(tileFrom.PathDirection);
 			direction = tileFrom.PathDirection;
@@ -115,6 +135,7 @@ namespace Object_Management
 			transform.localRotation = direction.GetRotation();
 			directionAngleTo = direction.GetAngle();
 			model.localPosition = Vector3.zero;
+			progressFactor = 1f;
 		}
 
 		void PrepareTurnRight()
@@ -122,6 +143,7 @@ namespace Object_Management
 			directionAngleTo = directionAngleFrom + 90f;
 			model.localPosition = new Vector3(-0.5f, 0f);
 			transform.localPosition = positionFrom + direction.GetHalfVector();
+			progressFactor = 1f / (Mathf.PI * 0.25f);
 		}
 
 		void PrepareTurnLeft()
@@ -129,6 +151,7 @@ namespace Object_Management
 			directionAngleTo = directionAngleFrom - 90f;
 			model.localPosition = new Vector3(0.5f, 0f);
 			transform.localPosition = positionFrom + direction.GetHalfVector();
+			progressFactor = 1f / (Mathf.PI * 0.25f);
 		}
 
 		void PrepareTurnAround()
@@ -136,6 +159,7 @@ namespace Object_Management
 			directionAngleTo = directionAngleFrom + 180f;
 			model.localPosition = Vector3.zero;
 			transform.localPosition = positionFrom;
+			progressFactor = 2f;
 		}
 	}
 }
