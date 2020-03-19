@@ -11,6 +11,7 @@
         <e p="Scripts" t="Include">
           <e p="Game.cs" t="Include" />
           <e p="Object Management" t="Include">
+            <e p="DirectionExtensions.cs" t="Include" />
             <e p="Enemy.cs" t="Include" />
             <e p="EnemyCollection.cs" t="Include" />
             <e p="EnemyFactory.cs" t="Include" />

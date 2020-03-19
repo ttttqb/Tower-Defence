@@ -13,7 +13,7 @@ public class Game : MonoBehaviour {
     GameTileContentFactory tileContentFactory = default;
 
     [SerializeField]
-    EnemyFactory enemyFactory;
+    EnemyFactory enemyFactory = default;
 
     [SerializeField, Range(0.1f, 10f)]
     float spawnSpeed = 1f;
