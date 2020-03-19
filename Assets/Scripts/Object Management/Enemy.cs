@@ -24,6 +24,9 @@ namespace Object_Management
 		Direction direction;
 		DirectionChange directionChange;
 		float directionAngleFrom, directionAngleTo;
+		
+		[SerializeField]
+		Transform model = default;
 
 		public void SpawnOn(GameTile tile)
 		{
@@ -68,9 +71,12 @@ namespace Object_Management
 				PrepareNextState();
 			}
 
-			transform.localPosition = Vector3.LerpUnclamped(positionFrom, positionTo, progress);
-			if (directionChange != DirectionChange.None)
-			{
+			if (directionChange == DirectionChange.None) {
+				transform.localPosition =
+					Vector3.LerpUnclamped(positionFrom, positionTo, progress);
+			}
+			//if (directionChange != DirectionChange.None) {
+			else {
 				float angle = Mathf.LerpUnclamped(
 					directionAngleFrom, directionAngleTo, progress
 				);
@@ -108,21 +114,28 @@ namespace Object_Management
 		{
 			transform.localRotation = direction.GetRotation();
 			directionAngleTo = direction.GetAngle();
+			model.localPosition = Vector3.zero;
 		}
 
 		void PrepareTurnRight()
 		{
 			directionAngleTo = directionAngleFrom + 90f;
+			model.localPosition = new Vector3(-0.5f, 0f);
+			transform.localPosition = positionFrom + direction.GetHalfVector();
 		}
 
 		void PrepareTurnLeft()
 		{
 			directionAngleTo = directionAngleFrom - 90f;
+			model.localPosition = new Vector3(0.5f, 0f);
+			transform.localPosition = positionFrom + direction.GetHalfVector();
 		}
 
 		void PrepareTurnAround()
 		{
 			directionAngleTo = directionAngleFrom + 180f;
+			model.localPosition = Vector3.zero;
+			transform.localPosition = positionFrom;
 		}
 	}
 }
