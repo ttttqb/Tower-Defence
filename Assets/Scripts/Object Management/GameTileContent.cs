@@ -7,7 +7,8 @@ namespace Object_Management
         Empty,
         Destination,
         Wall,
-        SpawnPoint
+        SpawnPoint,
+        Tower
     }
 
     public class GameTileContent : MonoBehaviour
