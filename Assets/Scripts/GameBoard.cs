@@ -19,6 +19,8 @@ public class GameBoard : MonoBehaviour
 	public int SpawnPointCount => spawnPoints.Count;
 
 	bool showGrid, showPaths;
+	
+	List<GameTileContent> updatingContent = new List<GameTileContent>();
 
 	public bool ShowGrid
 	{
@@ -157,7 +159,7 @@ public class GameBoard : MonoBehaviour
 
 	public GameTile GetTile(Ray ray)
 	{
-		if (Physics.Raycast(ray, out RaycastHit hit))
+		if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, 1))
 		{
 			int x = (int)(hit.point.x + size.x * 0.5f);
 			int y = (int)(hit.point.z + size.y * 0.5f);
@@ -228,19 +230,28 @@ public class GameBoard : MonoBehaviour
 		switch (tile.Content.Type)
 		{
 			case GameTileContentType.Tower:
+				updatingContent.Remove(tile.Content);
 				tile.Content = contentFactory.Get(GameTileContentType.Empty);
 				FindPaths();
 				break;
 			case GameTileContentType.Empty:
 			{
 				tile.Content = contentFactory.Get(GameTileContentType.Tower);
-				if (FindPaths()) return;
-				tile.Content = contentFactory.Get(GameTileContentType.Empty);
-				FindPaths();
+				if (FindPaths())
+				{
+					updatingContent.Add(tile.Content);
+				}
+				else
+				{
+					tile.Content = contentFactory.Get(GameTileContentType.Empty);
+					FindPaths();
+				}
+
 				break;
 			}
 			case GameTileContentType.Wall:
 				tile.Content = contentFactory.Get(GameTileContentType.Tower);
+				updatingContent.Add(tile.Content);
 				break;
 		}
 	}
@@ -248,5 +259,13 @@ public class GameBoard : MonoBehaviour
 	public GameTile GetSpawnPoint(int index)
 	{
 		return spawnPoints[index];
+	}
+
+	public void GameUpdate()
+	{
+		foreach (var t in updatingContent)
+		{
+			t.GameUpdate();
+		}
 	}
 }

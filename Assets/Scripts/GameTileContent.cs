@@ -9,7 +9,7 @@ public enum GameTileContentType
     Tower
 }
 
-public class GameTileContent : MonoBehaviour
+[SelectionBase] public class GameTileContent : MonoBehaviour
 {
     [SerializeField]
     GameTileContentType type = default;
@@ -34,5 +34,8 @@ public class GameTileContent : MonoBehaviour
         originFactory.Reclaim(this);
     }
 
+    public virtual void GameUpdate()
+    {
+    }
 
 }
