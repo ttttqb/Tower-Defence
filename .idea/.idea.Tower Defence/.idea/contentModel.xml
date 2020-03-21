@@ -8,23 +8,21 @@
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
         <e p="Scripts" t="Include">
+          <e p="DirectionExtensions.cs" t="Include" />
           <e p="Editor" t="Include">
             <e p="FloatRangeSliderDrawer.cs" t="Include" />
           </e>
+          <e p="Enemy.cs" t="Include" />
+          <e p="EnemyCollection.cs" t="Include" />
+          <e p="EnemyFactory.cs" t="Include" />
+          <e p="FloatRange.cs" t="Include" />
           <e p="Game.cs" t="Include" />
-          <e p="Object Management" t="Include">
-            <e p="DirectionExtensions.cs" t="Include" />
-            <e p="Enemy.cs" t="Include" />
-            <e p="EnemyCollection.cs" t="Include" />
-            <e p="EnemyFactory.cs" t="Include" />
-            <e p="FloatRange.cs" t="Include" />
-            <e p="GameBoard.cs" t="Include" />
-            <e p="GameObjectFactory.cs" t="Include" />
-            <e p="GameTile.cs" t="Include" />
-            <e p="GameTileContent.cs" t="Include" />
-            <e p="GameTileContentFactory.cs" t="Include" />
-            <e p="Tower.cs" t="Include" />
-          </e>
+          <e p="GameBoard.cs" t="Include" />
+          <e p="GameObjectFactory.cs" t="Include" />
+          <e p="GameTile.cs" t="Include" />
+          <e p="GameTileContent.cs" t="Include" />
+          <e p="GameTileContentFactory.cs" t="Include" />
+          <e p="Tower.cs" t="Include" />
         </e>
       </e>
       <e p="obj" t="ExcludeRecursive" />
