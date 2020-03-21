@@ -75,7 +75,7 @@ namespace Object_Management
 			neighbor.nextOnPath = this;
 			neighbor.ExitPoint = (neighbor.transform.localPosition + transform.localPosition) * 0.5f;
 			neighbor.PathDirection = direction;
-			return neighbor.Content.Type != GameTileContentType.Wall ? neighbor : null;
+			return neighbor.Content.BlocksPath ? null : neighbor;
 		}
 
 

@@ -86,7 +86,10 @@ public class Game : MonoBehaviour {
         if (tile != null)
         {
             //tile.Content = tileContentFactory.Get(GameTileContentType.Destination);
-            board.ToggleWall(tile);
+            if (Input.GetKey(KeyCode.LeftShift))
+                board.ToggleTower(tile);
+            else
+                board.ToggleWall(tile);
         }
     }
 

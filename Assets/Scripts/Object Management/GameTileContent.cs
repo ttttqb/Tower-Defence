@@ -27,6 +27,9 @@ namespace Object_Management
                 originFactory = value;
             }
         }
+
+        public bool BlocksPath =>
+            Type == GameTileContentType.Wall || Type == GameTileContentType.Tower;
     
         public void Recycle ()
         {

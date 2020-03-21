@@ -225,6 +225,28 @@ namespace Object_Management
 			}
 		}
 
+		public void ToggleTower(GameTile tile)
+		{
+			switch (tile.Content.Type)
+			{
+				case GameTileContentType.Tower:
+					tile.Content = contentFactory.Get(GameTileContentType.Empty);
+					FindPaths();
+					break;
+				case GameTileContentType.Empty:
+				{
+					tile.Content = contentFactory.Get(GameTileContentType.Tower);
+					if (FindPaths()) return;
+					tile.Content = contentFactory.Get(GameTileContentType.Empty);
+					FindPaths();
+					break;
+				}
+				case GameTileContentType.Wall:
+					tile.Content = contentFactory.Get(GameTileContentType.Tower);
+					break;
+			}
+		}
+
 		public GameTile GetSpawnPoint(int index)
 		{
 			return spawnPoints[index];
