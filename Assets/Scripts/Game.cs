@@ -22,6 +22,8 @@ public class Game : MonoBehaviour {
 
     EnemyCollection enemies = new EnemyCollection();
 
+    private TowerType selectedTowerType;
+
     private void Awake () {
 		board.Initialize(boardSize, tileContentFactory);
         board.ShowGrid = true;
@@ -53,6 +55,12 @@ public class Game : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.G))
         {
             board.ShowGrid = !board.ShowGrid;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1)) {
+            selectedTowerType = TowerType.Laser;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+            selectedTowerType = TowerType.Mortar;
         }
 
         spawnProgress += spawnSpeed * Time.deltaTime;
@@ -88,7 +96,7 @@ public class Game : MonoBehaviour {
         {
             //tile.Content = tileContentFactory.Get(GameTileContentType.Destination);
             if (Input.GetKey(KeyCode.LeftShift))
-                board.ToggleTower(tile);
+                board.ToggleTower(tile, selectedTowerType);
             else
                 board.ToggleWall(tile);
         }

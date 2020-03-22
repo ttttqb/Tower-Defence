@@ -11,6 +11,8 @@ public class LaserTower : Tower
 
     [SerializeField, Range(1f, 100f)] private float damagePerSecond = 10f;
 
+    public override TowerType TowerType => TowerType.Laser;
+
     void Awake () {
         laserBeamScale = laserBeam.localScale;
     }

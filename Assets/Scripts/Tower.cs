@@ -1,11 +1,19 @@
 ﻿using UnityEngine;
 
+public enum TowerType
+{
+    Laser, Mortar
+}
+
 public abstract class Tower : GameTileContent
 {
     [SerializeField, Range(1.5f, 10.5f)]
     protected float targetingRange = 1.5f;
 
     private const int EnemyLayerMask = 1 << 9;
+    
+    public abstract TowerType TowerType { get; }
+    
     private void OnDrawGizmosSelected () {
         Gizmos.color = Color.yellow;
         var position = transform.localPosition;
