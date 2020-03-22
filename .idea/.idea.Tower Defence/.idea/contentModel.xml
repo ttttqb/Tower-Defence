@@ -22,6 +22,7 @@
           <e p="GameTile.cs" t="Include" />
           <e p="GameTileContent.cs" t="Include" />
           <e p="GameTileContentFactory.cs" t="Include" />
+          <e p="LaserTower.cs" t="Include" />
           <e p="TargetPoint.cs" t="Include" />
           <e p="Tower.cs" t="Include" />
         </e>
