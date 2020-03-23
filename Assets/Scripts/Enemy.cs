@@ -71,7 +71,7 @@ public class Enemy : GameBehavior
 	{
 		if (Health <= 0f)
 		{
-			OriginFactory.Reclaim(this);
+			Recycle();
 			return false;
 		}
 		progress += Time.deltaTime * progressFactor;
@@ -81,7 +81,8 @@ public class Enemy : GameBehavior
 			// tileTo = tileTo.NextTileOnPath;
 			if (tileTo == null)
 			{
-				OriginFactory.Reclaim(this);
+				Game.EnemyReachedDestination();
+				Recycle();
 				return false;
 			}
 
@@ -172,18 +173,23 @@ public class Enemy : GameBehavior
 		progressFactor = speed / (Mathf.PI *Mathf.Max(Mathf.Abs(pathOffset),0.2f));
 	}
 
-	public void Initialize(float scale, float speed, float pathOffset)
+	public void Initialize(float scale, float speed, float pathOffset, float health)
 	{
 		Scale = scale;
 		model.localScale = new Vector3(scale, scale,scale);
 		this.speed = speed;
 		this.pathOffset = pathOffset;
-		Health = 100f * scale;
+		Health = health;
 	}
 
 	public void ApplyDamage(float damage)
 	{
 		Debug.Assert(damage >= 0f, "Negative damage applied.");
 		Health -= damage;
+	}
+
+	public override void Recycle()
+	{
+		originFactory.Reclaim(this);
 	}
 }

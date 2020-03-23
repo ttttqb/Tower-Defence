@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Game : MonoBehaviour {
 
@@ -12,16 +13,14 @@ public class Game : MonoBehaviour {
     [SerializeField]
     GameTileContentFactory tileContentFactory = default;
 
-    [SerializeField]
-    EnemyFactory enemyFactory = default;
-
     [SerializeField] private WarFactory warFactory = default;
 
-    [SerializeField, Range(0.1f, 10f)]
-    float spawnSpeed = 1f;
-    float spawnProgress;
-
     private static Game instance;
+    
+    [SerializeField]
+    GameScenario scenario = default;
+
+    GameScenario.State activeScenario;
 
     Ray TouchRay => Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -31,11 +30,23 @@ public class Game : MonoBehaviour {
     
     GameBehaviorCollection enemies = new GameBehaviorCollection();
     GameBehaviorCollection nonEnemies= new GameBehaviorCollection();
+    
+    [SerializeField, Range(0, 100)]
+    int startingPlayerHealth = 10;
 
-    private void Awake () {
+    private int playerHealth;
+    
+    const float pausedTimeScale = 0.1f;
+    [SerializeField, Range(1f, 10f)]
+    float playSpeed = 1f;
+
+    private void Awake ()
+    {
+        playerHealth = startingPlayerHealth;
 		board.Initialize(boardSize, tileContentFactory);
         board.ShowGrid = true;
-	}
+        activeScenario = scenario.Begin();
+    }
 
     private void OnValidate(){
         if (boardSize.x < 2){
@@ -72,21 +83,47 @@ public class Game : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Alpha1)) {
             selectedTowerType = TowerType.Laser;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+        if (Input.GetKeyDown(KeyCode.Alpha2)) {
             selectedTowerType = TowerType.Mortar;
         }
-
-        spawnProgress += spawnSpeed * Time.deltaTime;
-        while (spawnProgress >= 1f)
+        if (Input.GetKeyDown(KeyCode.B)) {
+            BeginNewGame();
+        }
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            Time.timeScale =
+                Time.timeScale > pausedTimeScale ? pausedTimeScale : playSpeed;
+        }
+        else if (Time.timeScale > pausedTimeScale)
         {
-            spawnProgress -= 1f;
-            SpawnEnemy();
+            Time.timeScale = playSpeed;
+        }
+        
+        if (playerHealth <= 0 && startingPlayerHealth > 0) {
+            Debug.Log("Defeat!");
+            BeginNewGame();
+        }
+        
+        if (!activeScenario.Progress() && enemies.IsEmpty) {
+            Debug.Log("Victory!");
+            BeginNewGame();
+            activeScenario.Progress();
         }
 
+        activeScenario.Progress();
+        
         enemies.GameUpdate();
         Physics.SyncTransforms();
         board.GameUpdate();
         nonEnemies.GameUpdate();
+    }
+
+    void BeginNewGame()
+    {
+        playerHealth = startingPlayerHealth;
+        enemies.Clear();
+        nonEnemies.Clear();
+        board.Clear();
+        activeScenario = scenario.Begin();
     }
 
     private void HandleAlternativeTouch()
@@ -116,13 +153,13 @@ public class Game : MonoBehaviour {
         }
     }
 
-    void SpawnEnemy()
-    {
-        GameTile spawnPoint =
-            board.GetSpawnPoint(UnityEngine.Random.Range(0, board.SpawnPointCount));
-        Enemy enemy = enemyFactory.Get();
+    public static void SpawnEnemy (EnemyFactory factory, EnemyType type) {
+        GameTile spawnPoint = instance.board.GetSpawnPoint(
+            Random.Range(0, instance.board.SpawnPointCount)
+        );
+        Enemy enemy = factory.Get(type);
         enemy.SpawnOn(spawnPoint);
-        enemies.Add(enemy);
+        instance.enemies.Add(enemy);
     }
 
     public static Shell SpawnShell()
@@ -137,5 +174,10 @@ public class Game : MonoBehaviour {
         Explosion explosion = instance.warFactory.Explosion;
         instance.nonEnemies.Add(explosion);
         return explosion;
+    }
+
+    public static void EnemyReachedDestination()
+    {
+        instance.playerHealth -= 1;
     }
 }
