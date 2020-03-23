@@ -10,8 +10,6 @@ public abstract class Tower : GameTileContent
     [SerializeField, Range(1.5f, 10.5f)]
     protected float targetingRange = 1.5f;
 
-    private const int EnemyLayerMask = 1 << 9;
-    
     public abstract TowerType TowerType { get; }
     
     private void OnDrawGizmosSelected () {
@@ -21,23 +19,13 @@ public abstract class Tower : GameTileContent
         Gizmos.DrawWireSphere(position, targetingRange);
     }
 
-    private static Collider[] targetsBuffer = new Collider[100];
-
     protected bool AcquireTarget(out TargetPoint target)
     {
-        var a = transform.localPosition;
-        var b = a;
-        b.y += 3;
-        var hits = Physics.OverlapCapsuleNonAlloc(
-            a, b, targetingRange, targetsBuffer, EnemyLayerMask
-        );
-        if (hits > 0)
+        if (TargetPoint.FillBuffer(transform.localPosition, targetingRange))
         {
-            target = targetsBuffer[Random.Range(0, hits)].GetComponent<TargetPoint>();
-            Debug.Assert(target!=null,"Targeted non-enemy!",targetsBuffer[0]);
+            target = TargetPoint.RandomBuffered;
             return true;
         }
-
         target = null;
         return false;
     }

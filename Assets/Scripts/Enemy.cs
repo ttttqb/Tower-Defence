@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : GameBehavior
 {
 
 	EnemyFactory originFactory;
@@ -68,7 +67,7 @@ public class Enemy : MonoBehaviour
 		progressFactor = speed;
 	}
 
-	public bool GameUpdate()
+	public override bool  GameUpdate()
 	{
 		if (Health <= 0f)
 		{
