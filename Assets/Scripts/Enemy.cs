@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Playables;
 
 public class Enemy : GameBehavior
 {
-
-	EnemyFactory originFactory;
+	private EnemyFactory originFactory;
 
 	public EnemyFactory OriginFactory
 	{
@@ -19,12 +20,11 @@ public class Enemy : GameBehavior
 	private Vector3 positionFrom, positionTo;
 	private float progress, progressFactor;
 
-	Direction direction;
-	DirectionChange directionChange;
-	float directionAngleFrom, directionAngleTo;
+	private Direction direction;
+	private DirectionChange directionChange;
+	private float directionAngleFrom, directionAngleTo;
 		
-	[SerializeField]
-	Transform model = default;
+	[SerializeField] private Transform model = default;
 
 	private float pathOffset;
 	private float speed;
@@ -32,6 +32,22 @@ public class Enemy : GameBehavior
 	public float Scale { get; private set; }
 
 	private float Health { get; set; }
+
+	[SerializeField] private EnemyAnimationConfig animationConfig = default;
+	private EnemyAnimator animator;
+
+	private void Awake()
+	{
+		animator.Configure(
+			model.GetChild(0).gameObject.AddComponent<Animator>(),
+			animationConfig
+			);
+	}
+
+	private void OnDestroy()
+	{
+		animator.Destroy();
+	}
 
 	public void SpawnOn(GameTile tile)
 	{
@@ -49,6 +65,7 @@ public class Enemy : GameBehavior
 	void PrepareIntro()
 	{
 		positionFrom = tileFrom.transform.localPosition;
+		transform.localPosition = positionFrom;
 		positionTo = tileFrom.ExitPoint;
 		direction = tileFrom.PathDirection;
 		directionChange = DirectionChange.None;
@@ -69,6 +86,20 @@ public class Enemy : GameBehavior
 
 	public override bool  GameUpdate()
 	{
+		if (animator.CurrentClip == EnemyAnimator.Clip.Intro) {
+			if (!animator.IsDone) {
+				return true;
+			}
+			animator.PlayMove(speed / Scale);
+		}
+		else if (animator.CurrentClip == EnemyAnimator.Clip.Outro) {
+			if (animator.IsDone) {
+				Recycle();
+				return false;
+			}
+			return true;
+		}
+		
 		if (Health <= 0f)
 		{
 			Recycle();
@@ -82,8 +113,8 @@ public class Enemy : GameBehavior
 			if (tileTo == null)
 			{
 				Game.EnemyReachedDestination();
-				Recycle();
-				return false;
+				animator.PlayOutro();
+				return true;
 			}
 
 			// positionFrom = positionTo;
@@ -180,6 +211,8 @@ public class Enemy : GameBehavior
 		this.speed = speed;
 		this.pathOffset = pathOffset;
 		Health = health;
+
+		animator.PlayIntro();
 	}
 
 	public void ApplyDamage(float damage)
@@ -190,6 +223,7 @@ public class Enemy : GameBehavior
 
 	public override void Recycle()
 	{
+		animator.Stop();
 		originFactory.Reclaim(this);
 	}
 }
