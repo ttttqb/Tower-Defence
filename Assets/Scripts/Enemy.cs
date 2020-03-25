@@ -35,6 +35,17 @@ public class Enemy : GameBehavior
 
 	[SerializeField] private EnemyAnimationConfig animationConfig = default;
 	private EnemyAnimator animator;
+	
+	Collider targetPointCollider;
+
+	public Collider TargetPointCollider {
+		set {
+			Debug.Assert(targetPointCollider == null, "Redefined collider!");
+			targetPointCollider = value;
+		}
+	}
+
+	public bool IsValidTarget => animator.CurrentClip == EnemyAnimator.Clip.Move;
 
 	private void Awake()
 	{
@@ -42,6 +53,7 @@ public class Enemy : GameBehavior
 			model.GetChild(0).gameObject.AddComponent<Animator>(),
 			animationConfig
 			);
+		//TargetPointCollider = GetComponent<Collider>();
 	}
 
 	private void OnDestroy()
@@ -86,14 +98,25 @@ public class Enemy : GameBehavior
 
 	public override bool  GameUpdate()
 	{
+#if UNITY_EDITOR
+		if (!animator.IsValid) {
+			animator.RestoreAfterHotReload(
+				model.GetChild(0).GetComponent<Animator>(),
+				animationConfig,
+				animationConfig.MoveAnimationSpeed * speed / Scale
+			);
+		}
+#endif
+		
 		animator.GameUpdate();
 		if (animator.CurrentClip == EnemyAnimator.Clip.Intro) {
 			if (!animator.IsDone) {
 				return true;
 			}
-			animator.PlayMove(speed / Scale);
+			animator.PlayMove(animationConfig.MoveAnimationSpeed * speed / Scale);
+			targetPointCollider.enabled = true;
 		}
-		else if (animator.CurrentClip == EnemyAnimator.Clip.Outro) {
+		else if (animator.CurrentClip >= EnemyAnimator.Clip.Outro) {
 			if (animator.IsDone) {
 				Recycle();
 				return false;
@@ -103,8 +126,9 @@ public class Enemy : GameBehavior
 		
 		if (Health <= 0f)
 		{
-			Recycle();
-			return false;
+			animator.PlayDying();
+			targetPointCollider.enabled = false;
+			return true;
 		}
 		progress += Time.deltaTime * progressFactor;
 		while (progress >= 1)
@@ -115,6 +139,7 @@ public class Enemy : GameBehavior
 			{
 				Game.EnemyReachedDestination();
 				animator.PlayOutro();
+				targetPointCollider.enabled = false;
 				return true;
 			}
 
@@ -214,6 +239,7 @@ public class Enemy : GameBehavior
 		Health = health;
 
 		animator.PlayIntro();
+		targetPointCollider.enabled = false;
 	}
 
 	public void ApplyDamage(float damage)

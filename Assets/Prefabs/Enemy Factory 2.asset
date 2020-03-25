@@ -43,7 +43,7 @@ MonoBehaviour:
       min: 90
       max: 120
   large:
-    prefab: {fileID: 8691867394363069066, guid: 6ce4ba621fcecfa44ad1858c3bcf10a2,
+    prefab: {fileID: 8691867394363069066, guid: b22ee7e5c05a86a4683aed2fbf15e386,
       type: 3}
     scale:
       min: 1.2
