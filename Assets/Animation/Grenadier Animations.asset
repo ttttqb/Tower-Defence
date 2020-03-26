@@ -16,4 +16,6 @@ MonoBehaviour:
   intro: {fileID: 7400000, guid: 70b0e092b9e42f041a6d654770eb7fd9, type: 3}
   outro: {fileID: 7400000, guid: 70b0e092b9e42f041a6d654770eb7fd9, type: 3}
   dying: {fileID: 7400000, guid: b65de24ac785be34cba65d8c7d8d3856, type: 3}
+  appear: {fileID: 7400000, guid: 62f12ee4409ed6c4eafceb9469a502ed, type: 2}
+  disappear: {fileID: 7400000, guid: dac176cdca9d53947b5e27b02ef0e705, type: 2}
   moveAnimationSpeed: 2
